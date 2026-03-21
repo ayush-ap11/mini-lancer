@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+enum ProjectStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  IN_REVIEW
+  COMPLETED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  PAID
+  OVERDUE
+}
+
+model User {
+  id                     String   @id @map("_id")
+  email                  String   @unique
+  name                   String
+  razorpayCustomerId     String?
+  razorpaySubscriptionId String?
+  plan                   String   @default("FREE")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  clients  Client[]
+  projects Project[]
+  invoices Invoice[]
+}
+
+model Client {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String
+  name           String
+  email          String
+  companyName    String?
+  magicLinkToken String?
+  tokenExpiresAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projects Project[]
+  invoices Invoice[]
+}
+
+model Project {
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  clientId  String        @db.ObjectId
+  name      String
+  status    ProjectStatus @default(NOT_STARTED)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client   Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  invoices Invoice[]
+}
+
+model Invoice {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String
+  clientId        String        @db.ObjectId
+  projectId       String?       @db.ObjectId
+  invoiceNumber   String
+  status          InvoiceStatus @default(DRAFT)
+  totalAmount     Int
+  lineItems       Json
+  dueDate         DateTime
+  razorpayOrderId String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  client  Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, invoiceNumber])
+}
