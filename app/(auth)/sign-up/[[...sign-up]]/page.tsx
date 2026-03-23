@@ -1,5 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
 import { SignUp } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 export default async function SignUpPage() {
@@ -10,8 +10,10 @@ export default async function SignUpPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <SignUp />
-    </div>
+    <SignUp
+      signInUrl="/sign-in"
+      forceRedirectUrl="/dashboard"
+      fallbackRedirectUrl="/dashboard"
+    />
   );
 }
