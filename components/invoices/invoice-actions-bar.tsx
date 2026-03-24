@@ -67,7 +67,13 @@ export default function InvoiceActionsBar({
   };
 
   const handlePrint = () => {
+    const previousTitle = document.title;
+    document.title = `${invoice.invoiceNumber}.pdf`;
     window.print();
+
+    window.setTimeout(() => {
+      document.title = previousTitle;
+    }, 300);
   };
 
   return (

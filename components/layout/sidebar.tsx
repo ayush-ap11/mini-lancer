@@ -24,13 +24,7 @@ export default function Sidebar() {
           <span className="text-xs font-semibold text-muted-foreground">
             Plan
           </span>
-          <span
-            className={
-              plan === "PRO"
-                ? "rounded-full bg-linear-to-r from-primary-fixed to-secondary px-2.5 py-1 text-[10px] font-bold text-on-primary-fixed"
-                : "rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground"
-            }
-          >
+          <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground">
             {plan}
           </span>
         </div>

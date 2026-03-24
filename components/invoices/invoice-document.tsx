@@ -58,12 +58,41 @@ export default function InvoiceDocument({
     <div className="invoice-print-area mx-auto w-full max-w-3xl">
       <style>{`
         @media print {
-          body > *:not(.invoice-print-area) { display: none !important; }
+          @page {
+            size: A4;
+          }
+
+          html, body {
+            background: #ffffff !important;
+          }
+
+          body * {
+            visibility: hidden !important;
+          }
+
+          .invoice-print-area,
+          .invoice-print-area * {
+            visibility: visible !important;
+          }
+
+          .invoice-print-area {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+
           .invoice-document {
             box-shadow: none !important;
             border: none !important;
+            border-radius: 0 !important;
             margin: 0 !important;
+            overflow: visible !important;
           }
+
           * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       `}</style>

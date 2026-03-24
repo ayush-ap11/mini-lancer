@@ -48,7 +48,7 @@ export default function ClientProjectsSection({
             <Badge variant="secondary">{projects.length}</Badge>
           </div>
 
-          <Link href={`/dashboard/projects?clientId=${clientId}`}>
+          <Link href={`/projects?clientId=${clientId}`}>
             <Button variant="outline" size="sm">
               New Project
             </Button>
@@ -72,7 +72,7 @@ export default function ClientProjectsSection({
             <FolderOpen className="size-4" />
             <span>No projects for this client yet</span>
             <Link
-              href={`/dashboard/projects?clientId=${clientId}`}
+              href={`/projects?clientId=${clientId}`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
                 "h-auto px-1 py-0 text-primary",
@@ -99,7 +99,7 @@ export default function ClientProjectsSection({
                   >
                     <td className="px-2 py-3">
                       <Link
-                        href="/dashboard/projects"
+                        href="/projects"
                         className="font-medium text-foreground hover:underline"
                       >
                         {project.name}

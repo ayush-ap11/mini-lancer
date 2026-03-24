@@ -44,7 +44,7 @@ export default function PlanBanner({
             </div>
 
             <Link
-              href="/dashboard/billing"
+              href="/billing"
               className="mt-3 inline-flex items-center justify-center rounded-md border border-violet-400/40 bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
             >
               Upgrade to Pro →

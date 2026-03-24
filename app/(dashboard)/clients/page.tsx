@@ -129,7 +129,7 @@ export default function ClientsPage() {
               ? "You've reached the Free plan limit."
               : `You have ${clientCount} of 3 clients on the Free plan.`}{" "}
             <Link
-              href="/dashboard/billing"
+              href="/billing"
               className="font-semibold text-primary hover:underline"
             >
               Upgrade to Pro

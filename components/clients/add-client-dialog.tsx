@@ -84,7 +84,7 @@ export default function AddClientDialog({
           {
             action: {
               label: "Upgrade to Pro",
-              onClick: () => router.push("/dashboard/billing"),
+              onClick: () => router.push("/billing"),
             },
           },
         );
