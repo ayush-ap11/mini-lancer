@@ -74,7 +74,7 @@ export default function ClientDetailHeader({
 
   const handleSendPortalLink = async () => {
     try {
-      await sendPortalLinkMutation.mutateAsync();
+      await sendPortalLinkMutation.mutateAsync(undefined);
       toast.success(
         `Portal link sent to ${client.email}! Link expires in 7 days.`,
       );

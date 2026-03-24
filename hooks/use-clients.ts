@@ -261,10 +261,10 @@ export function useDeleteClient() {
     onSuccess: async (_result, clientId) => {
       await queryClient.invalidateQueries({ queryKey: ["clients"] });
 
-      const isClientDetailPage = pathname === `/dashboard/clients/${clientId}`;
+      const isClientDetailPage = pathname === `/clients/${clientId}`;
 
       if (isClientDetailPage) {
-        router.push("/dashboard/clients");
+        router.push("/clients");
       }
     },
   });
@@ -274,9 +274,26 @@ export function useSendMagicLink(
   clientId: string,
   options: UseSendMagicLinkOptions = {},
 ) {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: () => sendMagicLink(clientId),
-    onSuccess: (data) => {
+    mutationFn: async (overrideClientId?: string) => {
+      const targetClientId = overrideClientId || clientId;
+
+      if (!targetClientId) {
+        throw new Error("Client ID is required to send a magic link");
+      }
+
+      return sendMagicLink(targetClientId);
+    },
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({ queryKey: ["clients"] });
+      if (clientId) {
+        await queryClient.invalidateQueries({
+          queryKey: ["clients", clientId],
+        });
+      }
+
       options.onSuccess?.(data);
 
       if (options.suppressDefaultToasts) {

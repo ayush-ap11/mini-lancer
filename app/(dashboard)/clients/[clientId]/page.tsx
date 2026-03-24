@@ -51,7 +51,7 @@ export default function ClientDetailPage({ params }: ClientDetailPageProps) {
         <p className="mt-1 text-sm text-muted-foreground">
           This client doesn't exist or you don't have access.
         </p>
-        <Link href="/dashboard/clients" className="mt-4">
+        <Link href="/clients" className="mt-4">
           <Button>Back to Clients</Button>
         </Link>
       </div>
@@ -64,7 +64,7 @@ export default function ClientDetailPage({ params }: ClientDetailPageProps) {
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard/clients">Clients</BreadcrumbLink>
+            <BreadcrumbLink href="/clients">Clients</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

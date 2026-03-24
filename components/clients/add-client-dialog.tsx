@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCreateClient } from "@/hooks/use-clients";
+import { useCreateClient, useSendMagicLink } from "@/hooks/use-clients";
 
 const createClientSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -49,18 +49,29 @@ export default function AddClientDialog({
   const createClientMutation = useCreateClient({
     suppressDefaultErrorToast: true,
   });
+  const sendMagicLinkMutation = useSendMagicLink("", {
+    suppressDefaultToasts: true,
+  });
 
   const handleSubmit = form.handleSubmit(async (values) => {
     try {
-      await createClientMutation.mutateAsync({
+      const createdClient = await createClientMutation.mutateAsync({
         name: values.name,
         email: values.email,
         companyName: values.companyName?.trim() || undefined,
       });
 
+      try {
+        await sendMagicLinkMutation.mutateAsync(createdClient.id);
+        toast.success("Client added and portal link sent ✓");
+      } catch {
+        toast.warning(
+          "Client added, but magic link email could not be sent. You can resend it from the client card.",
+        );
+      }
+
       onOpenChange(false);
       form.reset();
-      toast.success("Client added successfully ✓");
     } catch (error) {
       const status =
         typeof error === "object" && error !== null && "status" in error

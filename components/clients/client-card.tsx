@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Mail, Trash2 } from "lucide-react";
+import { Link2, Loader2, Mail, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -16,7 +16,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/card";
-import { type Client, useDeleteClient } from "@/hooks/use-clients";
+import {
+  type Client,
+  useDeleteClient,
+  useSendMagicLink,
+} from "@/hooks/use-clients";
 import { cn } from "@/lib/utils";
 
 type ClientCardProps = {
@@ -45,6 +49,9 @@ function getAvatarColor(name: string) {
 
 export default function ClientCard({ client }: ClientCardProps) {
   const deleteClientMutation = useDeleteClient();
+  const sendMagicLinkMutation = useSendMagicLink(client.id, {
+    suppressDefaultToasts: true,
+  });
 
   const initials = client.name.trim().charAt(0).toUpperCase() || "?";
   const avatarClassName = getAvatarColor(client.name);
@@ -56,6 +63,23 @@ export default function ClientCard({ client }: ClientCardProps) {
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Failed to delete client";
+      toast.error(message);
+    }
+  };
+
+  const tokenExpiresAt = client.tokenExpiresAt
+    ? new Date(client.tokenExpiresAt)
+    : null;
+  const isExpired =
+    tokenExpiresAt === null || tokenExpiresAt.getTime() <= Date.now();
+
+  const handleSendMagicLink = async () => {
+    try {
+      await sendMagicLinkMutation.mutateAsync(undefined);
+      toast.success(`Portal link sent to ${client.email}`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to send portal link";
       toast.error(message);
     }
   };
@@ -88,12 +112,30 @@ export default function ClientCard({ client }: ClientCardProps) {
       </CardContent>
 
       <div className="flex items-center justify-between border-t border-border px-5 py-3">
-        <Link
-          href={`/dashboard/clients/${client.id}`}
-          className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-        >
-          View Details
-        </Link>
+        <div className="flex items-center gap-1">
+          <Link
+            href={`/clients/${client.id}`}
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+          >
+            View Details
+          </Link>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="gap-1.5"
+            onClick={() => void handleSendMagicLink()}
+            disabled={sendMagicLinkMutation.isPending}
+          >
+            {sendMagicLinkMutation.isPending ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <Link2 className="size-3.5" />
+            )}
+            {isExpired ? "Resend Link" : "Send Link"}
+          </Button>
+        </div>
 
         <AlertDialog>
           <AlertDialogTrigger asChild>

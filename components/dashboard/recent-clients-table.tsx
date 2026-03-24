@@ -76,7 +76,7 @@ function EmptyState() {
         Add your first client to see them here
       </p>
       <Link
-        href="/dashboard/clients"
+        href="/clients"
         className="mt-4 inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
       >
         Add Client
@@ -157,7 +157,7 @@ export default function RecentClientsTable({
 
         <div className="mt-4 flex justify-end">
           <Link
-            href="/dashboard/clients"
+            href="/clients"
             className="text-xs font-medium text-violet-500/90 transition-colors hover:text-violet-500"
           >
             View all clients →
