@@ -9,10 +9,10 @@ import { Button } from "@/components/ui/Button";
 import { useSidebar } from "@/components/layout/sidebar-context";
 
 function getTitle(pathname: string) {
-  if (pathname.startsWith("/dashboard/clients")) return "Clients";
-  if (pathname.startsWith("/dashboard/projects")) return "Projects";
-  if (pathname.startsWith("/dashboard/invoices")) return "Invoices";
-  if (pathname.startsWith("/dashboard/billing")) return "Billing";
+  if (pathname.startsWith("/clients")) return "Clients";
+  if (pathname.startsWith("/projects")) return "Projects";
+  if (pathname.startsWith("/invoices")) return "Invoices";
+  if (pathname.startsWith("/billing")) return "Billing";
   return "Dashboard";
 }
 
@@ -41,7 +41,7 @@ export default function Navbar() {
 
           <div className="flex items-center gap-3">
             <ThemeSwitcher />
-            <UserButton afterSignOutUrl="/sign-in" />
+            <UserButton />
           </div>
         </div>
       </header>

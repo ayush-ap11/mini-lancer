@@ -1,15 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   CreditCard,
   FileText,
   FolderKanban,
   LayoutDashboard,
-  Users,
   type LucideIcon,
+  Users,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -20,10 +20,10 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { title: "Clients", href: "/dashboard/clients", icon: Users },
-  { title: "Projects", href: "/dashboard/projects", icon: FolderKanban },
-  { title: "Invoices", href: "/dashboard/invoices", icon: FileText },
-  { title: "Billing", href: "/dashboard/billing", icon: CreditCard },
+  { title: "Clients", href: "/clients", icon: Users },
+  { title: "Projects", href: "/projects", icon: FolderKanban },
+  { title: "Invoices", href: "/invoices", icon: FileText },
+  { title: "Billing", href: "/billing", icon: CreditCard },
 ];
 
 export default function SidebarLinks({

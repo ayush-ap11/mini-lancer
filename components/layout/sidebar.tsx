@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser, UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import SidebarLinks from "@/components/layout/sidebar-links";
 
 export default function Sidebar() {
@@ -36,7 +36,7 @@ export default function Sidebar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <UserButton afterSignOutUrl="/sign-in" />
+          <UserButton />
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-foreground">
               {user?.fullName ?? user?.firstName ?? "User"}
