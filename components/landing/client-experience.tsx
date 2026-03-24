@@ -10,7 +10,7 @@ export default function ClientExperience() {
           <div className="relative z-10 bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden border border-outline-variant/10">
             <div className="bg-surface-container-high px-6 py-4 flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center font-bold text-xs">
+                <div className="w-10 h-10 rounded-full bg-surface-container-highest text-foreground flex items-center justify-center font-bold text-xs">
                   JD
                 </div>
                 <div>

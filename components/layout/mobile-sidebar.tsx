@@ -11,10 +11,10 @@ export default function MobileSidebar() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         side="left"
-        className="w-72 p-0 bg-white dark:bg-slate-900 border-r border-border dark:border-slate-800"
+        className="w-72 p-0 bg-card border-r border-border"
       >
-        <div className="flex h-16 items-center border-b border-border px-6 dark:border-slate-800">
-          <span className="font-manrope text-xl font-black tracking-tighter text-slate-900 dark:text-white">
+        <div className="flex h-16 items-center border-b border-border px-6">
+          <span className="font-manrope text-xl font-black tracking-tighter text-foreground">
             Mini-lancer
           </span>
         </div>

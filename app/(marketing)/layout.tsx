@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="dark antialiased bg-[#141409] text-on-background">
+    <main className="antialiased bg-background text-on-background">
       {children}
     </main>
   );

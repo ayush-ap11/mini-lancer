@@ -7,33 +7,33 @@ import { Menu, X } from "lucide-react";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl shadow-sm dark:shadow-none">
+    <nav className="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-xl shadow-sm">
       <div className="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
-        <div className="font-manrope text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
+        <div className="font-manrope text-2xl font-black tracking-tighter text-foreground">
           <Link href="/">Mini-lancer</Link>
         </div>
 
         <div className="hidden md:flex items-center gap-8">
           <Link
-            className="font-manrope text-sm font-semibold tracking-tight text-yellow-600 dark:text-yellow-400 border-b-2 border-yellow-500 pb-1"
+            className="font-manrope text-sm font-semibold tracking-tight text-primary border-b-2 border-primary pb-1"
             href="/#features"
           >
             Features
           </Link>
           <Link
-            className="font-manrope text-sm font-semibold tracking-tight text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+            className="font-manrope text-sm font-semibold tracking-tight text-muted-foreground hover:text-foreground transition-colors"
             href="/#how-it-works"
           >
             How it Works
           </Link>
           <Link
-            className="font-manrope text-sm font-semibold tracking-tight text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+            className="font-manrope text-sm font-semibold tracking-tight text-muted-foreground hover:text-foreground transition-colors"
             href="/#pricing"
           >
             Pricing
           </Link>
           <Link
-            className="font-manrope text-sm font-semibold tracking-tight text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+            className="font-manrope text-sm font-semibold tracking-tight text-muted-foreground hover:text-foreground transition-colors"
             href="/#testimonials"
           >
             Testimonials
@@ -43,7 +43,7 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <Link
             href="/sign-in"
-            className="font-manrope text-sm font-semibold tracking-tight text-slate-600 dark:text-slate-400 hover:text-slate-900 px-4 py-2 transition-all"
+            className="font-manrope text-sm font-semibold tracking-tight text-muted-foreground hover:text-foreground px-4 py-2 transition-all"
           >
             Login
           </Link>
@@ -64,7 +64,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden bg-surface p-4 border-t border-slate-200 dark:border-slate-800">
+        <div className="md:hidden bg-surface p-4 border-t border-border">
           <div className="flex flex-col gap-3">
             <Link href="/#features" onClick={() => setOpen(false)}>
               Features

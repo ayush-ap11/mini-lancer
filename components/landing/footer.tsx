@@ -3,15 +3,15 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+    <footer className="w-full border-t border-border bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-8 py-12 flex flex-col md:flex-row justify-between items-center gap-8">
         <div className="flex flex-col gap-4 text-center md:text-left">
-          <div className="font-manrope text-lg font-bold text-slate-900 dark:text-white">
+          <div className="font-manrope text-lg font-bold text-foreground">
             Mini-lancer
           </div>
-          <p className="font-inter text-xs text-slate-500 dark:text-slate-400">
-            © 2024 Mini-lancer SaaS. Editorial precision for the high-stakes
-            freelancer.
+          <p className="font-inter text-xs text-muted-foreground">
+            &copy; 2026 Mini-lancer SaaS. Editorial precision for the
+            high-stakes freelancer.
           </p>
         </div>
 
@@ -28,7 +28,7 @@ export default function Footer() {
             <Link
               key={t}
               href="#"
-              className="font-inter text-xs text-slate-500 hover:text-yellow-500 dark:hover:text-yellow-400 transition-all duration-300 hover:underline decoration-yellow-500 underline-offset-4"
+              className="font-inter text-xs text-muted-foreground hover:text-primary transition-all duration-300 hover:underline decoration-primary underline-offset-4"
             >
               {t}
             </Link>
