@@ -85,8 +85,8 @@ export default function ClientCard({ client }: ClientCardProps) {
   };
 
   return (
-    <Card className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
-      <CardContent className="space-y-4 p-5">
+    <Card className="flex h-full min-h-52 flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+      <CardContent className="flex-1 space-y-4 p-5">
         <div className="flex items-start gap-3">
           <div
             className={`flex size-12 shrink-0 items-center justify-center rounded-full text-lg font-semibold ${avatarClassName}`}

@@ -1,5 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 export type UserMe = {
   name: string;
@@ -8,6 +9,40 @@ export type UserMe = {
   clientLimit: number | null;
   canAddClient: boolean;
 };
+
+export type CreateSubscriptionResponse = {
+  subscriptionId: string;
+  razorpayKeyId: string;
+};
+
+class ApiError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
+async function parseApiError(
+  response: Response,
+  fallbackMessage: string,
+): Promise<ApiError> {
+  let message = fallbackMessage;
+
+  try {
+    const body = (await response.json()) as { error?: string };
+
+    if (typeof body?.error === "string" && body.error.trim().length > 0) {
+      message = body.error;
+    }
+  } catch {
+    // no-op
+  }
+
+  return new ApiError(message, response.status);
+}
 
 async function fetchUserMe(): Promise<UserMe> {
   const response = await fetch("/api/users/me", {
@@ -31,6 +66,32 @@ async function fetchUserMe(): Promise<UserMe> {
   }
 
   return (await response.json()) as UserMe;
+}
+
+async function createSubscription(): Promise<CreateSubscriptionResponse> {
+  const response = await fetch("/api/subscriptions/create", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response, "Failed to create subscription");
+  }
+
+  return (await response.json()) as CreateSubscriptionResponse;
+}
+
+async function cancelSubscription(): Promise<{ message?: string }> {
+  const response = await fetch("/api/subscriptions/cancel", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw await parseApiError(response, "Failed to cancel subscription");
+  }
+
+  return (await response.json()) as { message?: string };
 }
 
 type UseUserMeOptions = {
@@ -65,4 +126,49 @@ export function useUserMe(options: UseUserMeOptions = {}) {
   }, [query.isError, query.error, options.onError]);
 
   return query;
+}
+
+export function useCreateSubscription() {
+  return useMutation({
+    mutationFn: createSubscription,
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        error.status === 400 &&
+        error.message === "You are already on the Pro plan"
+      ) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.error("Failed to initiate subscription. Please try again.");
+    },
+  });
+}
+
+export function useCancelSubscription() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: cancelSubscription,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["user-me"] });
+      toast.success(
+        "Subscription cancelled. You'll retain Pro access until the end of your billing period.",
+      );
+    },
+    onError: (error) => {
+      if (
+        error instanceof ApiError &&
+        error.status === 400 &&
+        (error.message === "You are not on the Pro plan" ||
+          error.message === "No active subscription found")
+      ) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.error("Failed to cancel subscription. Please try again.");
+    },
+  });
 }

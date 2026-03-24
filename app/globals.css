@@ -214,6 +214,15 @@ body {
   font-family: var(--font-inter), sans-serif;
 }
 
+a,
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 * {
   transition:
     background-color 0.2s ease,

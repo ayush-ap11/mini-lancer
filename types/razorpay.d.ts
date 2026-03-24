@@ -1,8 +1,9 @@
 interface RazorpayOptions {
   key: string;
-  amount: number;
-  currency: string;
-  order_id: string;
+  amount?: number;
+  currency?: string;
+  order_id?: string;
+  subscription_id?: string;
   name?: string;
   description?: string;
   handler: (response: RazorpayResponse) => void;

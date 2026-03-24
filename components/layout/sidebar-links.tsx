@@ -46,7 +46,7 @@ export default function SidebarLinks({
             href={item.href}
             onClick={onNavigate}
             className={cn(
-              "flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition-colors",
+              "flex cursor-pointer items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition-colors",
               isActive
                 ? "bg-primary-fixed/25 text-on-primary-fixed border border-primary-fixed/50"
                 : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
