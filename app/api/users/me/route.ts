@@ -12,7 +12,7 @@ export async function GET() {
   const [user, clientCount] = await prisma.$transaction([
     prisma.user.findUnique({
       where: { id: userId },
-      select: { plan: true },
+      select: { plan: true, name: true },
     }),
     prisma.client.count({
       where: { userId },
@@ -28,6 +28,7 @@ export async function GET() {
   return NextResponse.json(
     {
       plan: user.plan,
+      name: user.name,
       clientCount,
       clientLimit: isFreePlan ? 3 : null,
       canAddClient: isFreePlan ? clientCount < 3 : true,

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 
 export type UserMe = {
+  name: string;
   plan: "FREE" | "PRO";
   clientCount: number;
   clientLimit: number | null;

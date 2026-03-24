@@ -77,7 +77,7 @@ export default function ClientInvoicesSection({
             </p>
           </div>
 
-          <Link href={`/dashboard/invoices?clientId=${clientId}`}>
+          <Link href={`/invoices?clientId=${clientId}`}>
             <Button variant="outline" size="sm">
               New Invoice
             </Button>
@@ -102,7 +102,7 @@ export default function ClientInvoicesSection({
             <Receipt className="size-4" />
             <span>No invoices for this client yet</span>
             <Link
-              href={`/dashboard/invoices?clientId=${clientId}`}
+              href={`/invoices?clientId=${clientId}`}
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
                 "h-auto px-1 py-0 text-primary",
@@ -137,7 +137,7 @@ export default function ClientInvoicesSection({
                     >
                       <td className="px-2 py-3">
                         <Link
-                          href={`/dashboard/invoices/${invoice.id}`}
+                          href={`/invoices/${invoice.id}`}
                           className="font-medium text-foreground hover:underline"
                         >
                           #{invoice.invoiceNumber}

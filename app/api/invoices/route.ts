@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
-import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
 import z from "zod";
 import prisma from "@/lib/prisma";
 
@@ -98,18 +99,43 @@ export async function POST(request: NextRequest) {
   );
   const totalAmount = Math.round(total * 100);
 
-  const invoice = await prisma.invoice.create({
-    data: {
-      userId,
-      clientId: parsed.data.clientId,
-      ...(parsed.data.projectId ? { projectId: parsed.data.projectId } : {}),
-      invoiceNumber: parsed.data.invoiceNumber,
-      dueDate: new Date(parsed.data.dueDate),
-      lineItems: parsed.data.lineItems,
-      totalAmount,
-      ...(parsed.data.status ? { status: parsed.data.status } : {}),
-    },
-  });
+  const invoice = await (async () => {
+    try {
+      return await prisma.invoice.create({
+        data: {
+          userId,
+          clientId: parsed.data.clientId,
+          ...(parsed.data.projectId
+            ? { projectId: parsed.data.projectId }
+            : {}),
+          invoiceNumber: parsed.data.invoiceNumber,
+          dueDate: new Date(parsed.data.dueDate),
+          lineItems: parsed.data.lineItems,
+          totalAmount,
+          ...(parsed.data.status ? { status: parsed.data.status } : {}),
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        return NextResponse.json(
+          {
+            error:
+              "Invoice number already exists. Please choose a different invoice number.",
+          },
+          { status: 409 },
+        );
+      }
+
+      throw error;
+    }
+  })();
+
+  if (invoice instanceof NextResponse) {
+    return invoice;
+  }
 
   return NextResponse.json(invoice, { status: 201 });
 }

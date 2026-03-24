@@ -136,6 +136,7 @@ async function deleteProject(projectId: string): Promise<{ message: string }> {
 
 type UseProjectsOptions = {
   onError?: (error: Error) => void;
+  enabled?: boolean;
 };
 
 type UseCreateProjectOptions = {
@@ -151,6 +152,7 @@ export function useProjects(
   const query = useQuery({
     queryKey: clientId ? ["projects", { clientId }] : ["projects"],
     queryFn: () => fetchProjects(clientId),
+    enabled: options.enabled ?? true,
   });
 
   const lastErrorMessageRef = useRef<string | null>(null);

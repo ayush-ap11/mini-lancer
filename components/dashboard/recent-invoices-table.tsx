@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { FileText } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +11,14 @@ type RecentInvoicesTableProps = {
   clients: Client[];
   isLoading: boolean;
 };
+
+const RECENT_INVOICE_SKELETON_KEYS = [
+  "recent-invoice-row-1",
+  "recent-invoice-row-2",
+  "recent-invoice-row-3",
+  "recent-invoice-row-4",
+  "recent-invoice-row-5",
+] as const;
 
 function getRecentInvoices(invoices: Invoice[]) {
   return invoices.slice(-5).reverse();
@@ -45,9 +53,9 @@ function getBadgeVariant(
 function LoadingRows() {
   return (
     <div className="space-y-3">
-      {Array.from({ length: 5 }).map((_, index) => (
+      {RECENT_INVOICE_SKELETON_KEYS.map((skeletonKey) => (
         <div
-          key={`invoice-row-skeleton-${index}`}
+          key={skeletonKey}
           className="grid grid-cols-[1fr_1.2fr_0.9fr_0.9fr_1fr] items-center gap-3 border-b border-border/60 pb-3 last:border-0"
         >
           <Skeleton className="h-4 w-18" />
@@ -72,7 +80,7 @@ function EmptyState() {
         Create your first invoice to see it here
       </p>
       <Link
-        href="/dashboard/invoices"
+        href="/invoices"
         className="mt-4 inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
       >
         Create Invoice
@@ -126,7 +134,7 @@ export default function RecentInvoicesTable({
                     >
                       <td className="px-2 py-3">
                         <Link
-                          href={`/dashboard/invoices/${invoice.id}`}
+                          href={`/invoices/${invoice.id}`}
                           className="font-medium text-primary hover:underline"
                         >
                           {invoice.invoiceNumber}
@@ -158,7 +166,7 @@ export default function RecentInvoicesTable({
 
         <div className="mt-4 flex justify-end">
           <Link
-            href="/dashboard/invoices"
+            href="/invoices"
             className="text-xs font-medium text-violet-500/90 transition-colors hover:text-violet-500"
           >
             View all invoices →
