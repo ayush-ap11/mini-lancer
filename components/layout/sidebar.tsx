@@ -2,10 +2,12 @@
 
 import { UserButton, useUser } from "@clerk/nextjs";
 import SidebarLinks from "@/components/layout/sidebar-links";
+import { useUserMe } from "@/hooks/use-user";
 
 export default function Sidebar() {
   const { user } = useUser();
-  const plan = "FREE";
+  const userMeQuery = useUserMe();
+  const plan = userMeQuery.data?.plan ?? "FREE";
 
   return (
     <aside className="fixed inset-y-0 left-0 hidden w-60 border-r border-border bg-card md:flex md:flex-col">

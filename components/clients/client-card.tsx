@@ -1,6 +1,6 @@
 "use client";
 
-import { Link2, Loader2, Mail, Trash2 } from "lucide-react";
+import { ExternalLink, Link2, Loader2, Mail, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -21,6 +21,7 @@ import {
   useDeleteClient,
   useSendMagicLink,
 } from "@/hooks/use-clients";
+import { getClientPortalState } from "@/lib/client-portal";
 import { cn } from "@/lib/utils";
 
 type ClientCardProps = {
@@ -67,11 +68,7 @@ export default function ClientCard({ client }: ClientCardProps) {
     }
   };
 
-  const tokenExpiresAt = client.tokenExpiresAt
-    ? new Date(client.tokenExpiresAt)
-    : null;
-  const isExpired =
-    tokenExpiresAt === null || tokenExpiresAt.getTime() <= Date.now();
+  const portalState = getClientPortalState(client);
 
   const handleSendMagicLink = async () => {
     try {
@@ -133,8 +130,20 @@ export default function ClientCard({ client }: ClientCardProps) {
             ) : (
               <Link2 className="size-3.5" />
             )}
-            {isExpired ? "Resend Link" : "Send Link"}
+            {portalState.isActive ? "Resend Link" : "Send Link"}
           </Button>
+
+          {portalState.portalPath ? (
+            <Link
+              href={portalState.portalPath}
+              target="_blank"
+              rel="noreferrer"
+              className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+            >
+              <ExternalLink className="size-3.5" />
+              Open Portal
+            </Link>
+          ) : null}
         </div>
 
         <AlertDialog>

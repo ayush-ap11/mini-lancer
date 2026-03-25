@@ -123,18 +123,18 @@ export default function InvoicesPage() {
           </>
         ) : (
           <>
-            <Card className="border-amber-200/50 bg-amber-50/40 dark:bg-amber-950/20">
+            <Card className="">
               <CardContent className="space-y-1 p-4">
-                <p className="text-xs font-medium uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                <p className="text-xs font-medium uppercase tracking-wide ">
                   Total Outstanding
                 </p>
-                <p className="text-xl font-bold text-amber-700 dark:text-amber-300">
+                <p className="text-xl font-bold ">
                   {formatCurrency(summary.outstandingPaise)}
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-green-200/50 bg-green-50/40 dark:bg-green-950/20">
+            <Card className="">
               <CardContent className="space-y-1 p-4">
                 <p className="text-xs font-medium uppercase tracking-wide text-green-700 dark:text-green-400">
                   Total Paid
@@ -145,7 +145,7 @@ export default function InvoicesPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-slate-200/60 bg-slate-50/50 dark:bg-slate-900/30">
+            <Card className="">
               <CardContent className="space-y-1 p-4">
                 <p className="text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-400">
                   Total Draft

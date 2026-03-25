@@ -16,7 +16,7 @@ export default function BillingPage() {
 
   return (
     <div className="space-y-6">
-      <section>
+      <section className="ml-5">
         <h1 className="text-3xl font-headline font-bold text-foreground">
           Billing & Plan
         </h1>
@@ -32,7 +32,7 @@ export default function BillingPage() {
         isLoading={userMeQuery.isFetching}
       />
 
-      <div className="h-px w-full bg-border" />
+      <div className="h-px w-full bg-border mx-auto max-w-4xl" />
 
       <PricingSection
         currentPlan={user?.plan ?? "FREE"}

@@ -3,12 +3,13 @@
 import { UserButton } from "@clerk/nextjs";
 import { Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
-import ThemeSwitcher from "@/components/layout/theme-switcher";
 import MobileSidebar from "@/components/layout/mobile-sidebar";
-import { Button } from "@/components/ui/Button";
 import { useSidebar } from "@/components/layout/sidebar-context";
+import ThemeSwitcher from "@/components/layout/theme-switcher";
+import { Button } from "@/components/ui/Button";
 
 function getTitle(pathname: string) {
+  if (pathname.startsWith("/clients/portal")) return "Client Portal";
   if (pathname.startsWith("/clients")) return "Clients";
   if (pathname.startsWith("/projects")) return "Projects";
   if (pathname.startsWith("/invoices")) return "Invoices";

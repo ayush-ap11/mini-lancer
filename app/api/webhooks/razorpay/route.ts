@@ -1,5 +1,5 @@
+import { type NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
-import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 const razorpay = new Razorpay({
@@ -22,10 +22,17 @@ export async function POST(request: NextRequest) {
       process.env.NODE_ENV === "development" && signature === "test-bypass";
 
     if (!shouldBypassSignatureVerification) {
+      if (!process.env.RAZORPAY_WEBHOOK_SECRET) {
+        return NextResponse.json(
+          { error: "Missing webhook secret" },
+          { status: 500 },
+        );
+      }
+
       const isValid = Razorpay.validateWebhookSignature(
         rawBody,
         signature,
-        process.env.RAZORPAY_WEBHOOK_SECRET!,
+        process.env.RAZORPAY_WEBHOOK_SECRET,
       );
 
       if (!isValid) {
@@ -38,6 +45,29 @@ export async function POST(request: NextRequest) {
 
     const payload = JSON.parse(rawBody);
     const eventType = payload.event;
+
+    async function updateUserToProBySubscriptionId(subscriptionId: string) {
+      const user = await prisma.user.findFirst({
+        where: { razorpaySubscriptionId: subscriptionId },
+      });
+
+      if (!user) {
+        console.warn(
+          "User not found for Razorpay subscription:",
+          subscriptionId,
+        );
+        return;
+      }
+
+      if (user.plan !== "PRO") {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { plan: "PRO" },
+        });
+      }
+
+      console.log("User upgraded to PRO:", user.id);
+    }
 
     switch (eventType) {
       case "order.paid": {
@@ -68,27 +98,19 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ received: true }, { status: 200 });
       }
 
-      case "subscription.charged": {
-        const razorpaySubscriptionId = payload.payload.subscription.entity.id;
+      case "subscription.charged":
+      case "subscription.activated":
+      case "subscription.authenticated": {
+        const razorpaySubscriptionId =
+          payload?.payload?.subscription?.entity?.id ??
+          payload?.payload?.payment?.entity?.subscription_id;
 
-        const user = await prisma.user.findFirst({
-          where: { razorpaySubscriptionId },
-        });
-
-        if (!user) {
-          console.warn(
-            "User not found for Razorpay subscription:",
-            razorpaySubscriptionId,
-          );
+        if (!razorpaySubscriptionId) {
+          console.warn("Subscription id missing in webhook payload", eventType);
           return NextResponse.json({ received: true }, { status: 200 });
         }
 
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { plan: "PRO" },
-        });
-
-        console.log("User upgraded to PRO:", user.id);
+        await updateUserToProBySubscriptionId(razorpaySubscriptionId);
         return NextResponse.json({ received: true }, { status: 200 });
       }
 

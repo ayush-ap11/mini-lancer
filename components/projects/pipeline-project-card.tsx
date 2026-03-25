@@ -90,7 +90,7 @@ export default function PipelineProjectCard({
                     void handleDelete();
                   }}
                   disabled={deleteProjectMutation.isPending}
-                  className="bg-destructive text-white hover:bg-destructive/90"
+                  className="bg-destructive text-white dark:text-white hover:bg-destructive/90"
                 >
                   {deleteProjectMutation.isPending ? (
                     <>

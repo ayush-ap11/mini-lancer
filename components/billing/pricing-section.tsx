@@ -63,6 +63,37 @@ function UpgradeButton() {
   const queryClient = useQueryClient();
   const createSubscriptionMutation = useCreateSubscription();
 
+  const verifySubscription = async (payload: {
+    razorpay_payment_id: string;
+    razorpay_subscription_id: string;
+    razorpay_signature: string;
+  }) => {
+    const response = await fetch("/api/subscriptions/verify", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      let message = "Failed to verify subscription";
+
+      try {
+        const body = (await response.json()) as { error?: string };
+
+        if (typeof body?.error === "string" && body.error.trim().length > 0) {
+          message = body.error;
+        }
+      } catch {
+        // no-op
+      }
+
+      throw new Error(message);
+    }
+  };
+
   const handleUpgrade = async () => {
     try {
       const data = await createSubscriptionMutation.mutateAsync();
@@ -78,8 +109,32 @@ function UpgradeButton() {
         subscription_id: data.subscriptionId,
         name: "Mini-lancer",
         description: "Pro Plan Subscription",
-        handler: async () => {
-          await queryClient.invalidateQueries({ queryKey: ["user-me"] });
+        handler: async (response) => {
+          try {
+            if (
+              !response.razorpay_payment_id ||
+              !response.razorpay_subscription_id ||
+              !response.razorpay_signature
+            ) {
+              toast.error("Missing Razorpay verification details.");
+              return;
+            }
+
+            await verifySubscription({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_subscription_id: response.razorpay_subscription_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            await queryClient.invalidateQueries({ queryKey: ["user-me"] });
+            toast.success("Plan upgraded to Pro successfully.");
+          } catch (error) {
+            const message =
+              error instanceof Error
+                ? error.message
+                : "Failed to verify subscription";
+            toast.error(message);
+          }
         },
         theme: {
           color: "#7c3aed",
@@ -142,7 +197,7 @@ export default function PricingSection({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mx-auto max-w-4xl">
         <Card className="order-2 md:order-1">
           <CardContent className="flex h-full flex-col p-6">
             <h3 className="text-3xl font-bold text-foreground">Free</h3>

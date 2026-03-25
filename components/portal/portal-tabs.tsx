@@ -15,7 +15,7 @@ export default function PortalTabs({ token, activeTab }: PortalTabsProps) {
           className={cn(
             "rounded-full px-4 py-2 text-center text-sm font-medium transition-colors",
             activeTab === "projects"
-              ? "bg-violet-600 text-white"
+              ? "bg-orange-600 text-white"
               : "text-slate-500 hover:text-slate-700",
           )}
         >
@@ -27,7 +27,7 @@ export default function PortalTabs({ token, activeTab }: PortalTabsProps) {
           className={cn(
             "rounded-full px-4 py-2 text-center text-sm font-medium transition-colors",
             activeTab === "invoices"
-              ? "bg-violet-600 text-white"
+              ? "bg-orange-600 text-white"
               : "text-slate-500 hover:text-slate-700",
           )}
         >

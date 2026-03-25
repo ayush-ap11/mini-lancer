@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Client } from "@/hooks/use-clients";
+import { getClientPortalState } from "@/lib/client-portal";
 
 type ClientInfoCardProps = {
   client: Client;
@@ -15,13 +16,9 @@ type ClientInfoCardProps = {
 };
 
 function getPortalStatus(client: Client) {
-  if (!client.magicLinkToken || !client.tokenExpiresAt) {
-    return { label: "No Active Link", variant: "secondary" as const };
-  }
+  const portalState = getClientPortalState(client);
 
-  const isTokenActive = new Date(client.tokenExpiresAt).getTime() > Date.now();
-
-  if (!isTokenActive) {
+  if (!portalState.isActive) {
     return { label: "No Active Link", variant: "secondary" as const };
   }
 

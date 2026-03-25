@@ -147,8 +147,8 @@ export default function CurrentPlanCard({
         : "bg-red-500";
 
   return (
-    <Card>
-      <CardContent className="p-6">
+    <Card className="mx-auto max-w-4xl">
+      <CardContent className="p-6 ">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
             Current Plan

@@ -5,6 +5,7 @@ import {
   FileText,
   FolderKanban,
   LayoutDashboard,
+  Link2,
   type LucideIcon,
   Users,
 } from "lucide-react";
@@ -21,6 +22,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { title: "Clients", href: "/clients", icon: Users },
+  { title: "Portal Links", href: "/clients/portal", icon: Link2 },
   { title: "Projects", href: "/projects", icon: FolderKanban },
   { title: "Invoices", href: "/invoices", icon: FileText },
   { title: "Billing", href: "/billing", icon: CreditCard },
@@ -37,8 +39,7 @@ export default function SidebarLinks({
     <nav className="space-y-2">
       {navItems.map((item) => {
         const Icon = item.icon;
-        const isActive =
-          pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const isActive = pathname === item.href;
 
         return (
           <Link
@@ -46,16 +47,18 @@ export default function SidebarLinks({
             href={item.href}
             onClick={onNavigate}
             className={cn(
-              "flex cursor-pointer items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition-colors",
+              "group flex cursor-pointer items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition-colors",
               isActive
-                ? "bg-primary-fixed/25 text-on-primary-fixed border border-primary-fixed/50"
-                : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
+                ? "border border-primary-fixed bg-primary-fixed text-on-primary-fixed"
+                : "text-muted-foreground hover:bg-primary-fixed/20 hover:text-primary-fixed",
             )}
           >
             <Icon
               className={cn(
-                "size-4",
-                isActive ? "text-on-primary-fixed" : "text-muted-foreground",
+                "size-4 transition-colors",
+                isActive
+                  ? "text-on-primary-fixed"
+                  : "text-muted-foreground group-hover:text-primary-fixed",
               )}
             />
             <span>{item.title}</span>

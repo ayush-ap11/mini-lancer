@@ -1,10 +1,13 @@
 import { Check, CheckCircle2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import type { PortalProject, PortalProjectStatus } from "@/hooks/use-portal";
 import { cn } from "@/lib/utils";
 
 type ProjectTimelineProps = {
   projects: PortalProject[];
 };
+
+type ProjectFilter = "ALL" | "REMAINING" | "COMPLETED";
 
 type StageConfig = {
   status: PortalProjectStatus;
@@ -84,13 +87,117 @@ function ProjectStatusBadge({ status }: { status: PortalProjectStatus }) {
   );
 }
 
+function isCompletedProject(project: PortalProject) {
+  return project.status === "COMPLETED";
+}
+
+function compareByStatusThenCreatedAt(a: PortalProject, b: PortalProject) {
+  const statusDiff = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+
+  if (statusDiff !== 0) {
+    return statusDiff;
+  }
+
+  return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+}
+
+function getFilteredProjects(projects: PortalProject[], filter: ProjectFilter) {
+  if (filter === "REMAINING") {
+    return projects.filter((project) => !isCompletedProject(project));
+  }
+
+  if (filter === "COMPLETED") {
+    return projects.filter((project) => isCompletedProject(project));
+  }
+
+  return projects;
+}
+
 export default function ProjectTimeline({ projects }: ProjectTimelineProps) {
-  const currentStageOrder = projects.reduce((maxOrder, project) => {
-    return Math.max(maxOrder, STATUS_ORDER[project.status]);
-  }, 0);
+  const [filter, setFilter] = useState<ProjectFilter>("ALL");
+
+  const orderedProjects = useMemo(() => {
+    const remaining = projects
+      .filter((project) => !isCompletedProject(project))
+      .sort(compareByStatusThenCreatedAt);
+    const completed = projects
+      .filter((project) => isCompletedProject(project))
+      .sort(compareByStatusThenCreatedAt);
+
+    return [...remaining, ...completed];
+  }, [projects]);
+
+  const visibleProjects = useMemo(() => {
+    return getFilteredProjects(orderedProjects, filter);
+  }, [orderedProjects, filter]);
+
+  const timelineSourceProjects = useMemo(() => {
+    const remaining = orderedProjects.filter(
+      (project) => !isCompletedProject(project),
+    );
+
+    if (remaining.length > 0) {
+      return remaining;
+    }
+
+    return orderedProjects;
+  }, [orderedProjects]);
+
+  const currentStageOrder = timelineSourceProjects.reduce(
+    (maxOrder, project) => {
+      return Math.max(maxOrder, STATUS_ORDER[project.status]);
+    },
+    0,
+  );
+
+  const remainingCount = orderedProjects.filter(
+    (project) => !isCompletedProject(project),
+  ).length;
+  const completedCount = orderedProjects.length - remainingCount;
 
   return (
     <div className="space-y-6">
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setFilter("ALL")}
+            className={cn(
+              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+              filter === "ALL"
+                ? "bg-orange-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+            )}
+          >
+            All ({orderedProjects.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("REMAINING")}
+            className={cn(
+              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+              filter === "REMAINING"
+                ? "bg-orange-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+            )}
+          >
+            Remaining ({remainingCount})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter("COMPLETED")}
+            className={cn(
+              "rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+              filter === "COMPLETED"
+                ? "bg-orange-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200",
+            )}
+          >
+            Completed ({completedCount})
+          </button>
+        </div>
+      </section>
+
       <div className="hidden rounded-xl border border-slate-200 bg-white p-5 md:block">
         <div className="flex items-start">
           {STAGES.map((stage, index) => {
@@ -105,10 +212,10 @@ export default function ProjectTimeline({ projects }: ProjectTimelineProps) {
                     className={cn(
                       "flex size-8 items-center justify-center rounded-full border-2",
                       reached
-                        ? "border-violet-600 bg-violet-600 text-white"
+                        ? "border-orange-600 bg-orange-600 text-white"
                         : "border-slate-300 bg-white text-slate-300",
                       isCurrent &&
-                        "ring-2 ring-violet-600 ring-offset-2 ring-offset-white animate-pulse",
+                        "ring-2 ring-orange-600 ring-offset-2 ring-offset-white animate-pulse",
                     )}
                   >
                     {reached ? <Check className="size-4" /> : null}
@@ -122,7 +229,7 @@ export default function ProjectTimeline({ projects }: ProjectTimelineProps) {
                     className={cn(
                       "mt-4 h-0.5 flex-1",
                       reached
-                        ? "bg-violet-600"
+                        ? "bg-orange-600"
                         : "border-t border-dashed border-slate-200",
                     )}
                   />
@@ -147,10 +254,10 @@ export default function ProjectTimeline({ projects }: ProjectTimelineProps) {
                     className={cn(
                       "flex size-6 items-center justify-center rounded-full border-2",
                       reached
-                        ? "border-violet-600 bg-violet-600 text-white"
+                        ? "border-orange-600 bg-orange-600 text-white"
                         : "border-slate-300 bg-white text-slate-300",
                       isCurrent &&
-                        "ring-2 ring-violet-600 ring-offset-2 ring-offset-white animate-pulse",
+                        "ring-2 ring-orange-600 ring-offset-2 ring-offset-white animate-pulse",
                     )}
                   >
                     {reached ? <Check className="size-3.5" /> : null}
@@ -160,7 +267,7 @@ export default function ProjectTimeline({ projects }: ProjectTimelineProps) {
                       className={cn(
                         "mt-1 h-8 w-0.5",
                         reached
-                          ? "bg-violet-600"
+                          ? "bg-orange-600"
                           : "border-l border-dashed border-slate-300",
                       )}
                     />
@@ -176,7 +283,7 @@ export default function ProjectTimeline({ projects }: ProjectTimelineProps) {
       </div>
 
       <div className="space-y-3">
-        {projects.map((project) => {
+        {visibleProjects.map((project) => {
           const meta = getStatusMeta(project.status);
           const isCompleted = project.status === "COMPLETED";
 

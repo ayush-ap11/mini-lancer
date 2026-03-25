@@ -21,6 +21,10 @@ function formatDate(value: string) {
   });
 }
 
+function rupeesToPaise(amount: number) {
+  return Math.round(amount * 100);
+}
+
 function getDueDateTone(invoice: Invoice) {
   if (invoice.status === "PAID") {
     return "text-slate-500";
@@ -120,10 +124,10 @@ export default function PortalInvoiceCard({
                       {item.qty}
                     </td>
                     <td className="px-3 py-2 text-right text-slate-600">
-                      {formatCurrency(item.rate)}
+                      {formatCurrency(rupeesToPaise(item.rate))}
                     </td>
                     <td className="px-3 py-2 text-right font-medium text-slate-900">
-                      {formatCurrency(item.qty * item.rate)}
+                      {formatCurrency(rupeesToPaise(item.qty * item.rate))}
                     </td>
                   </tr>
                 ))}

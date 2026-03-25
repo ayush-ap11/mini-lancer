@@ -1,6 +1,14 @@
 "use client";
 
-import { Link2, Loader2, Mail, Pencil, Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  Link2,
+  Loader2,
+  Mail,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import EditClientDialog from "@/components/clients/edit-client-dialog";
@@ -22,6 +30,8 @@ import {
   useDeleteClient,
   useSendMagicLink,
 } from "@/hooks/use-clients";
+import { getClientPortalState } from "@/lib/client-portal";
+import { cn } from "@/lib/utils";
 
 const avatarColorClasses = [
   "bg-violet-500/15 text-violet-700 dark:text-violet-300",
@@ -57,6 +67,7 @@ export default function ClientDetailHeader({
   const sendPortalLinkMutation = useSendMagicLink(client.id, {
     suppressDefaultToasts: true,
   });
+  const portalState = getClientPortalState(client);
 
   const initials = client.name.trim().charAt(0).toUpperCase() || "?";
   const avatarClassName = getAvatarColor(client.name);
@@ -156,8 +167,20 @@ export default function ClientDetailHeader({
             ) : (
               <Link2 className="size-4" />
             )}
-            Send Portal Link
+            {portalState.isActive ? "Resend Portal Link" : "Send Portal Link"}
           </Button>
+
+          {portalState.portalPath ? (
+            <Link
+              href={portalState.portalPath}
+              target="_blank"
+              rel="noreferrer"
+              className={cn(buttonVariants({ variant: "outline" }), "gap-2")}
+            >
+              <ExternalLink className="size-4" />
+              Open Portal
+            </Link>
+          ) : null}
 
           <AlertDialog>
             <AlertDialogTrigger asChild>
