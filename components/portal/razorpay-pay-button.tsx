@@ -15,6 +15,12 @@ type RazorpayPayButtonProps = {
   amount: number;
 };
 
+type RazorpayPaymentSuccessPayload = {
+  razorpay_payment_id?: string;
+  razorpay_order_id?: string;
+  razorpay_signature?: string;
+};
+
 type PaymentState = "idle" | "preparing" | "checkout-open" | "submitted";
 
 let razorpayScriptPromise: Promise<void> | null = null;
@@ -54,6 +60,21 @@ export default function RazorpayPayButton({
   const queryClient = useQueryClient();
   const portalPay = usePortalPay(token);
 
+  const confirmPayment = async (payload: RazorpayPaymentSuccessPayload) => {
+    const response = await fetch(`/api/portal/${token}/pay/${invoiceId}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Payment verification failed");
+    }
+  };
+
   const handleClick = async () => {
     if (paymentState === "submitted") {
       return;
@@ -89,16 +110,21 @@ export default function RazorpayPayButton({
         order_id: payData.orderId,
         name: "Mini-lancer",
         description: `Payment for ${invoiceNumber}`,
-        handler: async () => {
+        handler: async (response: RazorpayPaymentSuccessPayload) => {
+          if (
+            !response.razorpay_payment_id ||
+            !response.razorpay_order_id ||
+            !response.razorpay_signature
+          ) {
+            throw new Error("Missing Razorpay confirmation fields");
+          }
+
           paymentSubmitted = true;
+          await confirmPayment(response);
           setPaymentState("submitted");
-          toast.success(
-            "Payment successful! 🎉 Your invoice status will update shortly.",
-            {
-              description:
-                "It may take a few seconds for the status to reflect.",
-            },
-          );
+          toast.success("Payment successful! 🎉 Invoice marked as paid.", {
+            description: "Status has been updated successfully.",
+          });
 
           await queryClient.invalidateQueries({
             queryKey: ["portal-invoices", token],
@@ -112,7 +138,7 @@ export default function RazorpayPayButton({
           },
         },
         theme: {
-          color: "#7c3aed",
+          color: "#f97316",
         },
       });
 
@@ -131,7 +157,7 @@ export default function RazorpayPayButton({
         disabled
         className="h-12 w-full bg-green-600 text-base font-semibold text-white hover:bg-green-600 md:w-auto"
       >
-        Payment Submitted <Check className="size-4" />
+        Paid <Check className="size-4" />
       </Button>
     );
   }
@@ -164,7 +190,7 @@ export default function RazorpayPayButton({
     <Button
       onClick={() => void handleClick()}
       disabled={portalPay.isPending}
-      className="h-12 w-full bg-violet-600 text-base font-semibold text-white hover:bg-violet-700 md:w-auto"
+      className="h-12 w-full bg-orange-500 text-base font-semibold text-white hover:bg-orange-600 md:w-auto"
     >
       Pay Now — {formatCurrency(amount)}
     </Button>

@@ -59,8 +59,8 @@ export default function PortalInvoiceCard({
     <article
       className={cn(
         "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm",
-        invoice.status === "OVERDUE" && "border-l-4 border-l-red-500",
-        invoice.status === "PENDING" && "border-l-4 border-l-violet-500",
+        invoice.status === "OVERDUE" && "border-l-4 border-l-orange-500",
+        invoice.status === "PENDING" && "border-l-4 border-l-orange-500",
         invoice.status === "PAID" && "border-l-4 border-l-green-500 opacity-80",
       )}
     >

@@ -70,19 +70,19 @@ export default function CurrentPlanCard({
   if (plan === "PRO") {
     return (
       <>
-        <Card className="border-violet-500/40">
+        <Card className="border-orange-500/40">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                 Current Plan
               </p>
-              <Badge className="border-violet-500 bg-violet-600 text-white">
+              <Badge className="border-orange-500 bg-orange-600 text-white">
                 PRO
               </Badge>
             </div>
 
             <h2 className="mt-4 flex items-center gap-2 text-3xl font-bold text-foreground">
-              Pro Plan <Sparkles className="size-5 text-violet-500" />
+              Pro Plan <Sparkles className="size-5 text-orange-500" />
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
               You have access to all Pro features
@@ -105,7 +105,7 @@ export default function CurrentPlanCard({
                   className="flex items-center gap-2 text-sm text-foreground"
                 >
                   <Check
-                    className="size-4 text-violet-600"
+                    className="size-4 text-orange-600"
                     fill="currentColor"
                   />
                   <span>{feature}</span>
