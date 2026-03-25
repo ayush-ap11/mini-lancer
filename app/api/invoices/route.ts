@@ -1,8 +1,16 @@
 import { auth } from "@clerk/nextjs/server";
-import { Prisma } from "@prisma/client";
 import { type NextRequest, NextResponse } from "next/server";
 import z from "zod";
 import prisma from "@/lib/prisma";
+
+function isUniqueInvoiceNumberError(error: unknown): error is { code: string } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code: unknown }).code === "P2002"
+  );
+}
 
 const invoiceStatusSchema = z.enum(["DRAFT", "PENDING", "PAID", "OVERDUE"]);
 
@@ -116,10 +124,7 @@ export async function POST(request: NextRequest) {
         },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === "P2002"
-      ) {
+      if (isUniqueInvoiceNumberError(error)) {
         return NextResponse.json(
           {
             error:

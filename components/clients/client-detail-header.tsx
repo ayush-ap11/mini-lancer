@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   type Client,
