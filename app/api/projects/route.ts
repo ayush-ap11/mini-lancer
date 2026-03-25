@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
+import { ensureUserExists } from "@/lib/ensure-user";
 import prisma from "@/lib/prisma";
 
 const createProjectSchema = z.object({
@@ -34,6 +35,8 @@ export async function POST(request: NextRequest) {
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  await ensureUserExists(userId);
 
   let body: unknown;
 

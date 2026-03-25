@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { ensureUserExists } from "@/lib/ensure-user";
 import prisma from "@/lib/prisma";
 
 const createClientSchema = z.object({
@@ -31,18 +32,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { plan: true },
-  });
+  const user = await ensureUserExists(userId);
 
   const clientCount = await prisma.client.count({
     where: { userId },
   });
-
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
 
   if (user.plan === "FREE" && clientCount >= 3) {
     return NextResponse.json(

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { Resend } from "resend";
 import prisma from "@/lib/prisma";
+import { ensureUserExists } from "@/lib/ensure-user";
 import { MagicLinkEmail } from "@/components/emails/magic-link-email";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -33,13 +34,7 @@ export async function POST(_request: NextRequest, { params }: RouteContext) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
-
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
+  const user = await ensureUserExists(userId);
 
   const token = crypto.randomBytes(32).toString("hex");
   const tokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);

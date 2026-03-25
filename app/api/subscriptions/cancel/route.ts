@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import Razorpay from "razorpay";
 import { NextRequest, NextResponse } from "next/server";
+import { ensureUserExists } from "@/lib/ensure-user";
 import prisma from "@/lib/prisma";
 
 const razorpay = new Razorpay({
@@ -16,13 +17,7 @@ export async function POST(_request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    const user = await ensureUserExists(userId);
 
     if (user.plan !== "PRO") {
       return NextResponse.json(

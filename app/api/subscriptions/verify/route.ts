@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import { auth } from "@clerk/nextjs/server";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { ensureUserExists } from "@/lib/ensure-user";
 import prisma from "@/lib/prisma";
 
 const verifySubscriptionSchema = z.object({
@@ -57,14 +58,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { id: true, razorpaySubscriptionId: true },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
-    }
+    const user = await ensureUserExists(userId);
 
     if (
       user.razorpaySubscriptionId &&

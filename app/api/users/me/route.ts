@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { ensureUserExists } from "@/lib/ensure-user";
 import prisma from "@/lib/prisma";
 
 export async function GET() {
@@ -9,19 +10,11 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const [user, clientCount] = await prisma.$transaction([
-    prisma.user.findUnique({
-      where: { id: userId },
-      select: { plan: true, name: true },
-    }),
-    prisma.client.count({
-      where: { userId },
-    }),
-  ]);
+  const user = await ensureUserExists(userId);
 
-  if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
-  }
+  const clientCount = await prisma.client.count({
+    where: { userId },
+  });
 
   const isFreePlan = user.plan === "FREE";
 
