@@ -15,7 +15,7 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-8">
           <Link
-            className="font-manrope text-sm font-semibold tracking-tight text-primary border-b-2 border-primary pb-1"
+            className="font-manrope text-sm font-semibold tracking-tight text-muted-foreground hover:text-foreground transition-colors"
             href="/#features"
           >
             Features

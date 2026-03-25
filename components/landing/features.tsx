@@ -30,7 +30,7 @@ export default function Features() {
             </div>
             <div className="mt-12 overflow-hidden rounded-lg">
               <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXATeMv3gwk93yuhvxZ4y98axYxhSq1s07e6YUFhEDXppSdRm2hfgDCtuetIl-9-WoCoxDnAt9FtGktcznLNEeoPxP81U9qCYiIQZPXXH4HX4Oryxj5UlwxXqMMwQMD7id3xpPped1nJVqI49ekHhuIOlY4xxpcgY1LWYGqqEtDVc7RMLoHY-CFc0WXdcjZNM3xcDvKIyXwjT7gRiM6UzCvu3S_P5wjsNlu9F8vayeur3bKrkoTJ574yzpdDnGTcTpBnCBjz94Y4DX"
+                src="https://res.cloudinary.com/dc4yjx0dc/image/upload/v1774424357/Screenshot_2026-03-25_121505_metqyf.png"
                 alt="Clean dashboard interface showing client contact list"
                 width={1200}
                 height={360}

@@ -25,7 +25,7 @@ export default function ClientExperience() {
 
             <div className="p-8">
               <Image
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCU4CDJ2CEwXA42Ej6ZYNqlHka9vCM_8h9v7SY1hIhxdEMaALxh3UKkNXB41Dp_cT0hT0NKX2_x6QGpv7hl_Nl_W0gw6W2ZQWBfhXyUy99wu8ktE-qAvY6woTeeCIyq34Td2Z7exdNqknw6CezTg5WMwzJiYnctXkFYVzdGjHC4ysuFX8mw_bWkrzTGGE8QMzxDh3f8NHgA4MUUJoUn5a9ox2_JeUC3ufq9a3qLiPQWdbXQntVeu18lUqfXu1rcDx6FMaukOmiMer_0"
+                src="https://res.cloudinary.com/dc4yjx0dc/image/upload/v1774424357/Screenshot_2026-03-25_121526_ptxbtu.png"
                 alt="Screenshot of a clean client portal dashboard with project progress and invoices"
                 width={1200}
                 height={700}

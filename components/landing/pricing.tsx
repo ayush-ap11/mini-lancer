@@ -21,7 +21,7 @@ export default function Pricing() {
               Starter
             </p>
             <h3 className="text-4xl font-black mb-4">
-              $0{" "}
+              ₹0{" "}
               <span className="text-lg font-normal text-on-surface-variant">
                 /mo
               </span>
@@ -62,7 +62,7 @@ export default function Pricing() {
               Pro
             </p>
             <h3 className="text-4xl font-black mb-4">
-              $29{" "}
+              ₹499{" "}
               <span className="text-lg font-normal text-on-surface-variant">
                 /mo
               </span>
