@@ -5,6 +5,7 @@ import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/Button";
+import type { PortalInvoice } from "@/hooks/use-portal";
 import { usePortalPay } from "@/hooks/use-portal";
 import { formatCurrency } from "@/lib/format-currency";
 
@@ -122,13 +123,39 @@ export default function RazorpayPayButton({
           paymentSubmitted = true;
           await confirmPayment(response);
           setPaymentState("submitted");
+
+          queryClient.setQueryData<PortalInvoice[]>(
+            ["portal-invoices", token],
+            (current) => {
+              if (!current) {
+                return current;
+              }
+
+              return current.map((invoice) =>
+                invoice.id === invoiceId
+                  ? {
+                      ...invoice,
+                      status: "PAID",
+                      razorpayOrderId:
+                        response.razorpay_order_id ?? invoice.razorpayOrderId,
+                    }
+                  : invoice,
+              );
+            },
+          );
+
           toast.success("Payment successful! 🎉 Invoice marked as paid.", {
             description: "Status has been updated successfully.",
           });
 
-          await queryClient.invalidateQueries({
-            queryKey: ["portal-invoices", token],
-          });
+          await Promise.all([
+            queryClient.invalidateQueries({
+              queryKey: ["portal-invoices", token],
+            }),
+            queryClient.invalidateQueries({
+              queryKey: ["invoices"],
+            }),
+          ]);
         },
         modal: {
           ondismiss: () => {

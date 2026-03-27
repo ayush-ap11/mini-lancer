@@ -146,10 +146,16 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
 
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(`${payload.razorpay_payment_id}|${payload.razorpay_order_id}`)
+      .update(`${payload.razorpay_order_id}|${payload.razorpay_payment_id}`)
       .digest("hex");
 
-    if (expectedSignature !== payload.razorpay_signature) {
+    const expectedBuffer = Buffer.from(expectedSignature, "utf8");
+    const providedBuffer = Buffer.from(payload.razorpay_signature, "utf8");
+
+    if (
+      expectedBuffer.length !== providedBuffer.length ||
+      !crypto.timingSafeEqual(expectedBuffer, providedBuffer)
+    ) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 

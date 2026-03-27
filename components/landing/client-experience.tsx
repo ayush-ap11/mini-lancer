@@ -37,7 +37,7 @@ export default function ClientExperience() {
                   <p className="text-[10px] uppercase tracking-wider text-on-surface-variant mb-1">
                     Total Paid
                   </p>
-                  <p className="text-xl font-bold">$12,400</p>
+                  <p className="text-xl font-bold">₹12,400</p>
                 </div>
                 <div className="p-4 bg-surface-container-low rounded-lg">
                   <p className="text-[10px] uppercase tracking-wider text-on-surface-variant mb-1">
